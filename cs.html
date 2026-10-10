@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Опрос: Насколько ты знаешь CS?</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-image: url('cs2foto.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-color: #0a0e1a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #eaeaea;
+  }
+
+  .container {
+    background: rgba(20, 25, 45, 0.95);
+    border: 1px solid #2a3a5e;
+    border-radius: 16px;
+    padding: 35px 40px;
+    max-width: 650px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+
+  h1 {
+    text-align: center;
+    color: #f0a500;
+    font-size: 28px;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #8899bb;
+    font-size: 14px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #2a3a5e;
+    padding-bottom: 20px;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .question {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid #f0a500;
+    border-radius: 8px;
+  }
+
+  .question p {
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #ffffff;
+  }
+
+  label {
+    display: block;
+    padding: 10px 14px;
+    margin: 6px 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 15px;
+  }
+
+  label:hover {
+    background: rgba(240, 165, 0, 0.15);
+    border-color: #f0a500;
+    transform: translateX(4px);
+  }
+
+  input[type="radio"] {
+    margin-right: 10px;
+    accent-color: #f0a500;
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid #2a3a5e;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.2s;
+    margin-bottom: 15px;
+  }
+
+  input[type="text"]:focus { border-color: #f0a500; }
+
+  .btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    background: linear-gradient(90deg, #f0a500, #ff6b00);
+    border: none;
+    border-radius: 10px;
+    color: #1a1a2e;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-transform: uppercase;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(240, 165, 0, 0.5);
+  }
+
+  .btn:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: linear-gradient(90deg, #2a3a5e, #3b4f7a);
+    color: #eaeaea;
+  }
+
+  .btn-secondary:hover {
+    box-shadow: 0 8px 25px rgba(42, 58, 94, 0.6);
+  }
+
+  .progress {
+    text-align: center;
+    color: #8899bb;
+    font-size: 13px;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin-bottom: 25px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f0a500, #ff6b00);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .start-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #c9d4e8;
+    margin-bottom: 25px;
+  }
+
+  .start-text ul {
+    margin: 15px 0 15px 20px;
+  }
+
+  .start-text li {
+    margin-bottom: 8px;
+  }
+
+  #result {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    background: rgba(240, 165, 0, 0.15);
+    border: 1px solid #f0a500;
+    color: #ffd97a;
+    overflow: hidden;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
+  #result img {
+    display: block;
+    max-width: 100%;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    margin: 0 auto 15px auto;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    object-fit: contain;
+    animation: pop 0.4s ease;
+  }
+
+  @keyframes pop {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
+  .recommendation {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #2a3a5e;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    font-size: 15px;
+    color: #c9d4e8;
+  }
+
+  .recommendation h3 {
+    color: #f0a500;
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+
+  .recommendation ul {
+    margin-left: 20px;
+  }
+
+  .recommendation li { margin-bottom: 8px; }
+
+  .score-big {
+    font-size: 42px;
+    font-weight: 800;
+    color: #f0a500;
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  .rank-title {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #ffffff;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ============ СТРАНИЦА 1: СТАРТ ============ -->
+  <div class="page active" id="page-start">
+    <h1>🎯 Опрос по CS</h1>
+    <p class="subtitle">Проверь, насколько хорошо ты знаешь Counter-Strike</p>
+    <div class="start-text">
+      <p>Этот тест состоит из <strong>5 вопросов</strong> о механике, тактике и основах игры в Counter-Strike.</p>
+      <ul>
+        <li>📌 На каждый вопрос — один правильный вариант ответа.</li>
+        <li>📌 Вопросы идут по одному на странице.</li>
+        <li>📌 В конце ты узнаешь свой ранг и получишь персональные рекомендации.</li>
+      </ul>
+      <p>Готов проверить свои знания? Введи ник (необязательно) и начнём!</p>
+    </div>
+    <input type="text" id="nickname" placeholder="Введи свой ник (необязательно)" maxlength="30">
+    <button class="btn" onclick="startQuiz()">Начать прохождение</button>
+  </div>
+
+  <!-- ============ СТРАНИЦА 2: ВОПРОСЫ ============ -->
+  <div class="page" id="page-quiz">
+    <h1>🎯 Вопрос <span id="qNumber">1</span> из 5</h1>
+    <div class="progress">Пройдено: <span id="progressText">0</span>%</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <!-- Вопрос 1 -->
+    <div class="question-block" id="qblock-1">
+      <div class="question">
+        <p>1. Сколько патронов в АК-47?</p>
+        <label><input type="radio" name="q1" value="0"> 25</label>
+        <label><input type="radio" name="q1" value="1"> 30</label>
+        <label><input type="radio" name="q1" value="0"> 35</label>
+        <label><input type="radio" name="q1" value="0"> 20</label>
+      </div>
+    </div>
+
+    <!-- Вопрос 2 -->
+    <div class="question-block hidden" id="qblock-2">
+      <div class="question">
+        <p>2. Где надо держать прицел во время матча?</p>
+        <label><input type="radio" name="q2" value="1"> На уровне головы</label>
+        <label><input type="radio" name="q2" value="0"> На уровне груди</label>
+        <label><input type="radio" name="q2" value="0"> На уровне пояса</label>
+        <label><input type="radio" name="q2" value="0"> Всегда смотреть в пол</label>
+      </div>
+    </div>
+
+    <!-- Вопрос 3 -->
+    <div class="question-block hidden" id="qblock-3">
+      <div class="question">
+        <p>3. Что означает фраза, когда говорят «давайте пойдём контакт Б»?</p>
+        <label><input type="radio" name="q3" value="0"> Быстро зайти на Б и стрелять во всё, что движется</label>
+        <label><input type="radio" name="q3" value="1"> Пойти под точку Б на шифте, пока одного из ваших тиммейтов не заметит враг, после чего начать быстро заходить на точку</label>
+        <label><input type="radio" name="q3" value="0"> Остаться на Б и ждать, пока враги сами придут</label>
+        <label><input type="radio" name="q3" value="0"> Забросить смоки на Б и не заходить на точку</label>
+      </div>
+    </div>
+
+    <!-- Вопрос 4 -->
+    <div class="question-block hidden" id="qblock-4">
+      <div class="question">
+        <p>4. Когда игрок с ролью опорник уходит со своего сайда?</p>
+        <label><input type="radio" name="q4" value="0"> Когда у него закончились патроны</label>
+        <label><input type="radio" name="q4" value="0"> Когда его тиммейты попросили помочь</label>
+        <label><input type="radio" name="q4" value="1"> Когда на противоположном сайде видно 5 человек или если увидели бомбу</label>
+        <label><input type="radio" name="q4" value="0"> Когда прошло 30 секунд с начала раунда</label>
+      </div>
+    </div>
+
+    <!-- Вопрос 5 -->
+    <div class="question-block hidden" id="qblock-5">
+      <div class="question">
+        <p>5. Что такое контр-стрейф?</p>
+        <label><input type="radio" name="q5" value="0"> Стрельба на бегу без остановки</label>
+        <label><input type="radio" name="q5" value="0"> Прыжок с разворотом на 180 градусов</label>
+        <label><input type="radio" name="q5" value="1"> Это когда ты идёшь и нажимаешь клавишу, чтобы идти в обратном направлении, для того чтобы сразу остановить свою модельку</label>
+        <label><input type="radio" name="q5" value="0"> Быстрое переключение между оружием и ножом</label>
+      </div>
+    </div>
+
+    <div id="quizError" style="color:#ff6b6b; text-align:center; margin-top:10px; display:none;">⚠️ Выбери вариант ответа!</div>
+
+    <button class="btn" id="nextBtn" onclick="nextQuestion()">Далее →</button>
+  </div>
+
+  <!-- ============ СТРАНИЦА 3: РЕЗУЛЬТАТ ============ -->
+  <div class="page" id="page-result">
+    <h1>🏆 Твой результат</h1>
+    <p class="subtitle">Вот что показал тест</p>
+    <div id="result"></div>
+    <button class="btn" onclick="showRecommendations()">Рекомендации по улучшению →</button>
+  </div>
+
+  <!-- ============ СТРАНИЦА 4: РЕКОМЕНДАЦИИ ============ -->
+  <div class="page" id="page-recommendations">
+    <h1>📚 Рекомендации</h1>
+    <p class="subtitle">Как прокачать свои знания в CS</p>
+    <div id="recommendationContent"></div>
+    <button class="btn btn-secondary" onclick="restartQuiz()">🔄 Пройти тест заново</button>
+  </div>
+
+</div>
+
+<script>
+/* ================= ДАННЫЕ ================= */
+const questions = ['q1', 'q2', 'q3', 'q4', 'q5'];
+let currentQuestion = 0;
+let score = 0;
+let userName = '';
+
+/* ================= НАВИГАЦИЯ ПО СТРАНИЦАМ ================= */
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+}
+
+/* ================= СТАРТ ================= */
+function startQuiz() {
+  userName = document.getElementById('nickname').value.trim();
+  currentQuestion = 0;
+  score = 0;
+
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+
+  showQuestion(0);
+  showPage('page-quiz');
+}
+
+/* ================= ПОКАЗ ВОПРОСА ================= */
+function showQuestion(index) {
+  document.querySelectorAll('.question-block').forEach(b => b.classList.add('hidden'));
+  document.getElementById('qblock-' + (index + 1)).classList.remove('hidden');
+
+  document.getElementById('qNumber').textContent = index + 1;
+  const percent = Math.round((index / questions.length) * 100);
+  document.getElementById('progressText').textContent = percent;
+  document.getElementById('progressFill').style.width = percent + '%';
+
+  const nextBtn = document.getElementById('nextBtn');
+  if (index === questions.length - 1) {
+    nextBtn.textContent = 'Завершить тест ✓';
+  } else {
+    nextBtn.textContent = 'Далее →';
+  }
+
+  document.getElementById('quizError').style.display = 'none';
+}
+
+/* ================= СЛЕДУЮЩИЙ ВОПРОС ================= */
+function nextQuestion() {
+  const qName = questions[currentQuestion];
+  const selected = document.querySelector(`input[name="${qName}"]:checked`);
+
+  if (!selected) {
+    document.getElementById('quizError').style.display = 'block';
+    return;
+  }
+
+  score += parseInt(selected.value);
+
+  if (currentQuestion < questions.length - 1) {
+    currentQuestion++;
+    showQuestion(currentQuestion);
+  } else {
+    showResult();
+  }
+}
+
+/* ================= РЕЗУЛЬТАТ ================= */
+function showResult() {
+  const resultDiv = document.getElementById('result');
+  const prefix = userName ? userName + ', твой результат: ' : 'Твой результат: ';
+
+  let message = '';
+  let image = '';
+  let rankTitle = '';
+
+  if (score === 5) {
+    rankTitle = '🏆 Глобал';
+    message = 'Ты настоящий знаток CS! Твои знания на уровне профессионального игрока.';
+    image = 'https://i.pinimg.com/originals/91/61/b8/9161b8a0c6238bf3d24c6d83ecbd6a97.png';
+  } else if (score === 4) {
+    rankTitle = '💎 Легендарный орёл';
+    message = 'Отличный результат! Ты хорошо разбираешься в CS, но есть куда расти.';
+    image = 'https://distribution.faceit-cdn.net/images/4aa39e86-184b-4820-ab17-8b73eb95d0ff.jpg';
+  } else if (score === 3) {
+    rankTitle = '⭐ Золотая звезда';
+    message = 'Неплохо! Базовые знания есть, но некоторые детали стоит подтянуть.';
+    image = 'https://media1.tenor.com/m/uiATSEPk67IAAAAC/niko-cs2.gif';
+  } else if (score === 2) {
+    rankTitle = '🔫 Серебро';
+    message = 'Есть куда расти. Ты знаешь основы, но нужно больше практики и теории.';
+    image = 'https://images.cybersport.ru/images/as-is/plain/7b/7b3b413c-e16c-4612-9876-67fb67f2a577.jpg@jpg';
+  } else if (score === 1) {
+    rankTitle = '😅 Серебро 1';
+    message = 'Тренируйся больше! Похоже, ты только начинаешь свой путь в CS.';
+    image = 'https://cdn.fastcup.net/logos/teams/287344_8dh0ncd9l.webp';
+  } else {
+    rankTitle = '💀 Полный ноль';
+    message = 'Ты вообще играл в CS?! Самое время начать изучать эту легендарную игру!';
+    image = 'https://media1.tenor.com/m/Vl8edByzYfwAAAAC/strogo-cs2.gif';
+  }
+
+  resultDiv.innerHTML = `
+    <img src="${image}" alt="Ранг" onerror="this.style.display='none'">
+    <div class="rank-title">${rankTitle}</div>
+    <div class="score-big">${score} / 5</div>
+    <div>${prefix}${message}</div>
+  `;
+
+  showPage('page-result');
+}
+
+/* ================= РЕКОМЕНДАЦИИ ================= */
+function showRecommendations() {
+  const recDiv = document.getElementById('recommendationContent');
+  let html = '';
+
+  if (score === 5) {
+    html = `
+      <div class="recommendation">
+        <h3>🔥 Ты — элита!</h3>
+        <p>Твои знания на высшем уровне. Вот что можно сделать, чтобы оставаться в форме:</p>
+        <ul>
+          <li>Следи за патчами CS2 — мета меняется, и новые детали появляются регулярно.</li>
+          <li>Смотри профессиональные матчи (Major, BLAST, IEM) — это лучший источник актуальной информации.</li>
+          <li>Попробуй анализировать демки про-игроков — это углубит понимание тактик.</li>
+          <li>Помогай новичкам — объясняя, ты сам закрепляешь знания.</li>
+        </ul>
+      </div>
+    `;
+  } else if (score === 4) {
+    html = `
+      <div class="recommendation">
+        <h3>💎 Отличный уровень!</h3>
+        <p>Ты близок к идеалу. Осталось подтянуть пару деталей:</p>
+        <ul>
+          <li>Изучи экономику CS2 подробнее: бонусы за проигрыш, стоимость килл-награды, тайминги закупок.</li>
+          <li>Разберись в ролях игроков: опорник, снайпер, энтри-фраггер, саппорт.</li>
+          <li>Почитай про тайминги ротаций на разных картах — когда и куда стоит смещаться.</li>
+          <li>Практикуй контр-стрейф и стоп-стрельбу на тренировочных картах.</li>
+        </ul>
+      </div>
+    `;
+  } else if (score === 3) {
+    html = `
+      <div class="recommendation">
+        <h3>⭐ Хорошая база!</h3>
+        <p>Ты знаешь основы, но есть пробелы. Вот план прокачки:</p>
+        <ul>
+          <li><strong>Прицел:</strong> всегда держи на уровне головы — это база, которую нельзя игнорировать.</li>
+          <li><strong>Роли:</strong> выучи, кто такой опорник, энтри, саппорт и снайпер, и как они взаимодействуют.</li>
+          <li><strong>Механика:</strong> отработай контр-стрейф, стоп-стрельбу и спайки.</li>
+          <li><strong>Тактика:</strong> разберись, что значит «контакт», «шифт», «фейк» и другие командные команды.</li>
+          <li>Смотри обучающие видео от про-игроков и тренеров.</li>
+        </ul>
+      </div>
+    `;
+  } else if (score === 2) {
+    html = `
+      <div class="recommendation">
+        <h3>🔫 Нужно подтянуть теорию</h3>
+        <p>Ты знаешь базу, но многие важные детали упущены. Рекомендую:</p>
+        <ul>
+          <li>Начни с основ: какие режимы есть в CS2, чем отличаются карты, какие есть типы оружия.</li>
+          <li>Выучи характеристики базового оружия: АК-47, M4A4, AWP, Desert Eagle.</li>
+          <li>Разберись с ролями в команде — это ключ к пониманию тактики.</li>
+          <li>Посмотри стримы популярных игроков и обрати внимание на их решения в игре.</li>
+          <li>Попробуй пройти обучающие карты в мастерской Steam.</li>
+        </ul>
+      </div>
+    `;
+  } else if (score === 1) {
+    html = `
+      <div class="recommendation">
+        <h3>😅 Начинающий путь</h3>
+        <p>Ты только начинаешь знакомство с CS. Вот с чего стоит начать:</p>
+        <ul>
+          <li><strong>Основы:</strong> узнай, что такое CT и T, какие цели у каждой стороны.</li>
+          <li><strong>Оружие:</strong> выучи базовые модели: AK-47, M4A4, AWP, Desert Eagle.</li>
+          <li><strong>Прицел:</strong> всегда держи на уровне головы — это самое важное правило стрельбы.</li>
+          <li><strong>Механика:</strong> научись останавливаться перед выстрелом (контр-стрейф).</li>
+          <li>Сыграй несколько матчей против ботов, чтобы привыкнуть к управлению.</li>
+          <li>Посмотри вводные видео «CS2 для новичков» на YouTube.</li>
+        </ul>
+      </div>
+    `;
+  } else {
+    html = `
+      <div class="recommendation">
+        <h3>💀 С чего начать?</h3>
+        <p>Похоже, ты совсем не знаком с CS. Это не страшно — вот план с нуля:</p>
+        <ul>
+          <li><strong>Шаг 1:</strong> установи CS2 (она бесплатна в Steam) и пройди обучение.</li>
+          <li><strong>Шаг 2:</strong> изучи основы: стороны (CT/T), цель игры, экономику раундов.</li>
+          <li><strong>Шаг 3:</strong> поиграй в Deathmatch, чтобы привыкнуть к стрельбе и оружию.</li>
+          <li><strong>Шаг 4:</strong> посмотри гайды для новичков на YouTube — например, «CS2 с нуля».</li>
+          <li><strong>Шаг 5:</strong> начни играть Casual на Dust2 — это самая простая для понимания карта.</li>
+          <li>Не переживай о ранге — сначала просто наслаждайся игрой и учись.</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  recDiv.innerHTML = html;
+  showPage('page-recommendations');
+}
+
+/* ================= ПЕРЕЗАПУСК ================= */
+function restartQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  userName = '';
+
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+  document.getElementById('nickname').value = '';
+  document.getElementById('result').innerHTML = '';
+  document.getElementById('recommendationContent').innerHTML = '';
+
+  showPage('page-start');
+}
+</script>
+
+</body>
+</html>
